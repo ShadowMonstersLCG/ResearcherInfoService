@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c4a990873b1d41059eac7b3dda6f7fd1" Name="Diagram1">
+        <EntityTypeShape EntityType="ScheduleExModel.ApprovalStatus" Width="1.5" PointX="5.25" PointY="8.25" />
+        <EntityTypeShape EntityType="ScheduleExModel.Expertise" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="ScheduleExModel.Project" Width="1.5" PointX="5.25" PointY="14.625" />
+        <EntityTypeShape EntityType="ScheduleExModel.ResearcherApproval" Width="1.5" PointX="7.5" PointY="7.25" />
+        <EntityTypeShape EntityType="ScheduleExModel.ResearcherAvailability" Width="1.5" PointX="5.25" PointY="11.5" />
+        <EntityTypeShape EntityType="ScheduleExModel.ResearcherExpertise" Width="1.5" PointX="5.25" PointY="4.625" />
+        <EntityTypeShape EntityType="ScheduleExModel.Role" Width="1.5" PointX="0.75" PointY="5" />
+        <EntityTypeShape EntityType="ScheduleExModel.User" Width="1.5" PointX="3" PointY="4.125" />
+        <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_ApprovalStatuses" />
+        <AssociationConnector Association="ScheduleExModel.FK_ResearcherExpertise_Expertise" />
+        <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_Projects" />
+        <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_ResearcherAvailability" />
+        <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_Users" />
+        <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_Users1" />
+        <AssociationConnector Association="ScheduleExModel.FK_ResearcherAvailability_Users" />
+        <AssociationConnector Association="ScheduleExModel.FK_Expertise_Users" />
+        <AssociationConnector Association="ScheduleExModel.FK_Users_Roles" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
