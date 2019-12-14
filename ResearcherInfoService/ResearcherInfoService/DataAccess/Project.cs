@@ -18,6 +18,7 @@ namespace ResearcherInfoService.DataAccess
         public Project()
         {
             this.ResearcherApprovals = new HashSet<ResearcherApproval>();
+            this.Expertises = new HashSet<Expertise>();
         }
     
         public int ProjectId { get; set; }
@@ -32,5 +33,7 @@ namespace ResearcherInfoService.DataAccess
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ResearcherApproval> ResearcherApprovals { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Expertise> Expertises { get; set; }
     }
 }

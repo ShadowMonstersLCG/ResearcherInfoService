@@ -12,7 +12,7 @@ namespace ResearcherInfoService.DataAccess
     using System;
     using System.Collections.Generic;
     
-    public partial class ResearcherExpertise
+    public partial class ResearcherExpertis
     {
         public int ResearchExpertiseId { get; set; }
         public string AffiliatedOrgName { get; set; }

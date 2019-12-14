@@ -20,7 +20,7 @@ namespace ResearcherInfoService.DataAccess
             this.ResearcherApprovals = new HashSet<ResearcherApproval>();
             this.ResearcherApprovals1 = new HashSet<ResearcherApproval>();
             this.ResearcherAvailabilities = new HashSet<ResearcherAvailability>();
-            this.ResearcherExpertises = new HashSet<ResearcherExpertise>();
+            this.ResearcherExpertises = new HashSet<ResearcherExpertis>();
         }
     
         public int UserId { get; set; }
@@ -38,7 +38,7 @@ namespace ResearcherInfoService.DataAccess
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ResearcherAvailability> ResearcherAvailabilities { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ResearcherExpertise> ResearcherExpertises { get; set; }
+        public virtual ICollection<ResearcherExpertis> ResearcherExpertises { get; set; }
         public virtual Role Role { get; set; }
     }
 }

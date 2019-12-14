@@ -126,7 +126,7 @@
     <Compile Include="DataAccess\ResearcherAvailability.cs">
       <DependentUpon>ScheduleEx.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataAccess\ResearcherExpertise.cs">
+    <Compile Include="DataAccess\ResearcherExpertis.cs">
       <DependentUpon>ScheduleEx.tt</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\Role.cs">

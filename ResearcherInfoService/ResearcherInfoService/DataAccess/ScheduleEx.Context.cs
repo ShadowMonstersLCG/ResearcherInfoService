@@ -30,7 +30,7 @@ namespace ResearcherInfoService.DataAccess
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<ResearcherApproval> ResearcherApprovals { get; set; }
         public virtual DbSet<ResearcherAvailability> ResearcherAvailabilities { get; set; }
-        public virtual DbSet<ResearcherExpertise> ResearcherExpertises { get; set; }
+        public virtual DbSet<ResearcherExpertis> ResearcherExpertises { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<User> Users { get; set; }
     }

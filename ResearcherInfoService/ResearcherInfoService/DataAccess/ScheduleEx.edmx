@@ -12,12 +12,20 @@
           <Property Name="ApprovalStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Status" Type="varchar" MaxLength="1000" />
         </EntityType>
-        <EntityType Name="Expertise">
+        <EntityType Name="Expertises">
           <Key>
             <PropertyRef Name="ExpertiseId" />
           </Key>
           <Property Name="ExpertiseId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ExpertiseName" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="ProjectExpertises">
+          <Key>
+            <PropertyRef Name="ProjectId" />
+            <PropertyRef Name="ExpertiseId" />
+          </Key>
+          <Property Name="ProjectId" Type="int" Nullable="false" />
+          <Property Name="ExpertiseId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Projects">
           <Key>
@@ -27,13 +35,13 @@
           <Property Name="ProjectName" Type="varchar" MaxLength="300" />
           <Property Name="Description" Type="varchar" MaxLength="1000" />
           <Property Name="Approved" Type="bit" Nullable="false" />
-          <Property Name="ApprovedDate" Type="date" />
+          <Property Name="ApprovedDate" Type="datetime" />
           <Property Name="ApprovedBy" Type="varchar" MaxLength="100" />
-          <Property Name="StartDate" Type="date" Nullable="false" />
-          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
           <Property Name="IsPublished" Type="bit" />
         </EntityType>
-        <EntityType Name="ResearcherApproval">
+        <EntityType Name="ResearcherApprovals">
           <Key>
             <PropertyRef Name="ProjectId" />
             <PropertyRef Name="ResearcherAvailabilityId" />
@@ -44,17 +52,18 @@
           <Property Name="InfoRequested" Type="varchar" MaxLength="5000" />
           <Property Name="ApproverId" Type="int" />
           <Property Name="ResearcherId" Type="int" Nullable="false" />
+          <Property Name="HasResearcherApplied" Type="bit" Nullable="false" />
         </EntityType>
-        <EntityType Name="ResearcherAvailability">
+        <EntityType Name="ResearcherAvailabilities">
           <Key>
             <PropertyRef Name="AvailabilityId" />
           </Key>
-          <Property Name="AvailabilityId" Type="int" Nullable="false" />
-          <Property Name="ResearcherId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="StartDate" Type="date" Nullable="false" />
-          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="AvailabilityId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ResearcherId" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="ResearcherExpertise">
+        <EntityType Name="ResearcherExpertises">
           <Key>
             <PropertyRef Name="ResearchExpertiseId" />
           </Key>
@@ -84,96 +93,120 @@
         </EntityType>
         <Association Name="FK_Expertise_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="ResearcherExpertise" Type="Self.ResearcherExpertise" Multiplicity="*" />
+          <End Role="ResearcherExpertises" Type="Self.ResearcherExpertises" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="ResearcherExpertise">
+            <Dependent Role="ResearcherExpertises">
               <PropertyRef Name="ResearcherId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProjectExpertises_Expertises">
+          <End Role="Expertises" Type="Self.Expertises" Multiplicity="1" />
+          <End Role="ProjectExpertises" Type="Self.ProjectExpertises" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Expertises">
+              <PropertyRef Name="ExpertiseId" />
+            </Principal>
+            <Dependent Role="ProjectExpertises">
+              <PropertyRef Name="ExpertiseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProjectExpertises_Projects">
+          <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
+          <End Role="ProjectExpertises" Type="Self.ProjectExpertises" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Projects">
+              <PropertyRef Name="ProjectId" />
+            </Principal>
+            <Dependent Role="ProjectExpertises">
+              <PropertyRef Name="ProjectId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ResearcherApproval_ApprovalStatuses">
           <End Role="ApprovalStatuses" Type="Self.ApprovalStatuses" Multiplicity="1" />
-          <End Role="ResearcherApproval" Type="Self.ResearcherApproval" Multiplicity="*" />
+          <End Role="ResearcherApprovals" Type="Self.ResearcherApprovals" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApprovalStatuses">
               <PropertyRef Name="ApprovalStatusId" />
             </Principal>
-            <Dependent Role="ResearcherApproval">
+            <Dependent Role="ResearcherApprovals">
               <PropertyRef Name="ApprovalStatusId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ResearcherApproval_Projects">
           <End Role="Projects" Type="Self.Projects" Multiplicity="1" />
-          <End Role="ResearcherApproval" Type="Self.ResearcherApproval" Multiplicity="*" />
+          <End Role="ResearcherApprovals" Type="Self.ResearcherApprovals" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Projects">
               <PropertyRef Name="ProjectId" />
             </Principal>
-            <Dependent Role="ResearcherApproval">
+            <Dependent Role="ResearcherApprovals">
               <PropertyRef Name="ProjectId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ResearcherApproval_ResearcherAvailability">
-          <End Role="ResearcherAvailability" Type="Self.ResearcherAvailability" Multiplicity="1" />
-          <End Role="ResearcherApproval" Type="Self.ResearcherApproval" Multiplicity="*" />
+          <End Role="ResearcherAvailabilities" Type="Self.ResearcherAvailabilities" Multiplicity="1" />
+          <End Role="ResearcherApprovals" Type="Self.ResearcherApprovals" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ResearcherAvailability">
+            <Principal Role="ResearcherAvailabilities">
               <PropertyRef Name="AvailabilityId" />
             </Principal>
-            <Dependent Role="ResearcherApproval">
+            <Dependent Role="ResearcherApprovals">
               <PropertyRef Name="ResearcherAvailabilityId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ResearcherApproval_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
-          <End Role="ResearcherApproval" Type="Self.ResearcherApproval" Multiplicity="*" />
+          <End Role="ResearcherApprovals" Type="Self.ResearcherApprovals" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="ResearcherApproval">
+            <Dependent Role="ResearcherApprovals">
               <PropertyRef Name="ApproverId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ResearcherApproval_Users1">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="ResearcherApproval" Type="Self.ResearcherApproval" Multiplicity="*" />
+          <End Role="ResearcherApprovals" Type="Self.ResearcherApprovals" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="ResearcherApproval">
+            <Dependent Role="ResearcherApprovals">
               <PropertyRef Name="ResearcherId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ResearcherAvailability_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="ResearcherAvailability" Type="Self.ResearcherAvailability" Multiplicity="*" />
+          <End Role="ResearcherAvailabilities" Type="Self.ResearcherAvailabilities" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="ResearcherAvailability">
+            <Dependent Role="ResearcherAvailabilities">
               <PropertyRef Name="ResearcherId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ResearcherExpertise_Expertise">
-          <End Role="Expertise" Type="Self.Expertise" Multiplicity="1" />
-          <End Role="ResearcherExpertise" Type="Self.ResearcherExpertise" Multiplicity="*" />
+          <End Role="Expertises" Type="Self.Expertises" Multiplicity="1" />
+          <End Role="ResearcherExpertises" Type="Self.ResearcherExpertises" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Expertise">
+            <Principal Role="Expertises">
               <PropertyRef Name="ExpertiseId" />
             </Principal>
-            <Dependent Role="ResearcherExpertise">
+            <Dependent Role="ResearcherExpertises">
               <PropertyRef Name="ExpertiseId" />
             </Dependent>
           </ReferentialConstraint>
@@ -192,44 +225,53 @@
         </Association>
         <EntityContainer Name="ScheduleExModelStoreContainer">
           <EntitySet Name="ApprovalStatuses" EntityType="Self.ApprovalStatuses" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Expertise" EntityType="Self.Expertise" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Expertises" EntityType="Self.Expertises" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProjectExpertises" EntityType="Self.ProjectExpertises" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ResearcherApproval" EntityType="Self.ResearcherApproval" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ResearcherAvailability" EntityType="Self.ResearcherAvailability" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ResearcherExpertise" EntityType="Self.ResearcherExpertise" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ResearcherApprovals" EntityType="Self.ResearcherApprovals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ResearcherAvailabilities" EntityType="Self.ResearcherAvailabilities" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ResearcherExpertises" EntityType="Self.ResearcherExpertises" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Expertise_Users" Association="Self.FK_Expertise_Users">
             <End Role="Users" EntitySet="Users" />
-            <End Role="ResearcherExpertise" EntitySet="ResearcherExpertise" />
+            <End Role="ResearcherExpertises" EntitySet="ResearcherExpertises" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProjectExpertises_Expertises" Association="Self.FK_ProjectExpertises_Expertises">
+            <End Role="Expertises" EntitySet="Expertises" />
+            <End Role="ProjectExpertises" EntitySet="ProjectExpertises" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProjectExpertises_Projects" Association="Self.FK_ProjectExpertises_Projects">
+            <End Role="Projects" EntitySet="Projects" />
+            <End Role="ProjectExpertises" EntitySet="ProjectExpertises" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_ApprovalStatuses" Association="Self.FK_ResearcherApproval_ApprovalStatuses">
             <End Role="ApprovalStatuses" EntitySet="ApprovalStatuses" />
-            <End Role="ResearcherApproval" EntitySet="ResearcherApproval" />
+            <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_Projects" Association="Self.FK_ResearcherApproval_Projects">
             <End Role="Projects" EntitySet="Projects" />
-            <End Role="ResearcherApproval" EntitySet="ResearcherApproval" />
+            <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_ResearcherAvailability" Association="Self.FK_ResearcherApproval_ResearcherAvailability">
-            <End Role="ResearcherAvailability" EntitySet="ResearcherAvailability" />
-            <End Role="ResearcherApproval" EntitySet="ResearcherApproval" />
+            <End Role="ResearcherAvailabilities" EntitySet="ResearcherAvailabilities" />
+            <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_Users" Association="Self.FK_ResearcherApproval_Users">
             <End Role="Users" EntitySet="Users" />
-            <End Role="ResearcherApproval" EntitySet="ResearcherApproval" />
+            <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_Users1" Association="Self.FK_ResearcherApproval_Users1">
             <End Role="Users" EntitySet="Users" />
-            <End Role="ResearcherApproval" EntitySet="ResearcherApproval" />
+            <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherAvailability_Users" Association="Self.FK_ResearcherAvailability_Users">
             <End Role="Users" EntitySet="Users" />
-            <End Role="ResearcherAvailability" EntitySet="ResearcherAvailability" />
+            <End Role="ResearcherAvailabilities" EntitySet="ResearcherAvailabilities" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherExpertise_Expertise" Association="Self.FK_ResearcherExpertise_Expertise">
-            <End Role="Expertise" EntitySet="Expertise" />
-            <End Role="ResearcherExpertise" EntitySet="ResearcherExpertise" />
+            <End Role="Expertises" EntitySet="Expertises" />
+            <End Role="ResearcherExpertises" EntitySet="ResearcherExpertises" />
           </AssociationSet>
           <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
             <End Role="Roles" EntitySet="Roles" />
@@ -246,7 +288,7 @@
           <EntitySet Name="Projects" EntityType="ScheduleExModel.Project" />
           <EntitySet Name="ResearcherApprovals" EntityType="ScheduleExModel.ResearcherApproval" />
           <EntitySet Name="ResearcherAvailabilities" EntityType="ScheduleExModel.ResearcherAvailability" />
-          <EntitySet Name="ResearcherExpertises" EntityType="ScheduleExModel.ResearcherExpertise" />
+          <EntitySet Name="ResearcherExpertises" EntityType="ScheduleExModel.ResearcherExpertis" />
           <EntitySet Name="Roles" EntityType="ScheduleExModel.Role" />
           <EntitySet Name="Users" EntityType="ScheduleExModel.User" />
           <AssociationSet Name="FK_ResearcherApproval_ApprovalStatuses" Association="ScheduleExModel.FK_ResearcherApproval_ApprovalStatuses">
@@ -255,7 +297,7 @@
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherExpertise_Expertise" Association="ScheduleExModel.FK_ResearcherExpertise_Expertise">
             <End Role="Expertise" EntitySet="Expertises" />
-            <End Role="ResearcherExpertise" EntitySet="ResearcherExpertises" />
+            <End Role="ResearcherExpertis" EntitySet="ResearcherExpertises" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_Projects" Association="ScheduleExModel.FK_ResearcherApproval_Projects">
             <End Role="Project" EntitySet="Projects" />
@@ -279,11 +321,15 @@
           </AssociationSet>
           <AssociationSet Name="FK_Expertise_Users" Association="ScheduleExModel.FK_Expertise_Users">
             <End Role="User" EntitySet="Users" />
-            <End Role="ResearcherExpertise" EntitySet="ResearcherExpertises" />
+            <End Role="ResearcherExpertis" EntitySet="ResearcherExpertises" />
           </AssociationSet>
           <AssociationSet Name="FK_Users_Roles" Association="ScheduleExModel.FK_Users_Roles">
             <End Role="Role" EntitySet="Roles" />
             <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="ProjectExpertises" Association="ScheduleExModel.ProjectExpertises">
+            <End Role="Expertise" EntitySet="Expertises" />
+            <End Role="Project" EntitySet="Projects" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="ApprovalStatus">
@@ -300,7 +346,8 @@
           </Key>
           <Property Name="ExpertiseId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ExpertiseName" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="ResearcherExpertises" Relationship="ScheduleExModel.FK_ResearcherExpertise_Expertise" FromRole="Expertise" ToRole="ResearcherExpertise" />
+          <NavigationProperty Name="ResearcherExpertises" Relationship="ScheduleExModel.FK_ResearcherExpertise_Expertise" FromRole="Expertise" ToRole="ResearcherExpertis" />
+          <NavigationProperty Name="Projects" Relationship="ScheduleExModel.ProjectExpertises" FromRole="Expertise" ToRole="Project" />
         </EntityType>
         <EntityType Name="Project">
           <Key>
@@ -310,12 +357,13 @@
           <Property Name="ProjectName" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
           <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="Approved" Type="Boolean" Nullable="false" />
-          <Property Name="ApprovedDate" Type="DateTime" Precision="0" />
+          <Property Name="ApprovedDate" Type="DateTime" Precision="3" />
           <Property Name="ApprovedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsPublished" Type="Boolean" />
           <NavigationProperty Name="ResearcherApprovals" Relationship="ScheduleExModel.FK_ResearcherApproval_Projects" FromRole="Project" ToRole="ResearcherApproval" />
+          <NavigationProperty Name="Expertises" Relationship="ScheduleExModel.ProjectExpertises" FromRole="Project" ToRole="Expertise" />
         </EntityType>
         <EntityType Name="ResearcherApproval">
           <Key>
@@ -333,19 +381,20 @@
           <NavigationProperty Name="ResearcherAvailability" Relationship="ScheduleExModel.FK_ResearcherApproval_ResearcherAvailability" FromRole="ResearcherApproval" ToRole="ResearcherAvailability" />
           <NavigationProperty Name="User" Relationship="ScheduleExModel.FK_ResearcherApproval_Users" FromRole="ResearcherApproval" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="ScheduleExModel.FK_ResearcherApproval_Users1" FromRole="ResearcherApproval" ToRole="User" />
+          <Property Name="HasResearcherApplied" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="ResearcherAvailability">
           <Key>
             <PropertyRef Name="AvailabilityId" />
           </Key>
-          <Property Name="AvailabilityId" Type="Int32" Nullable="false" />
-          <Property Name="ResearcherId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="AvailabilityId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ResearcherId" Type="Int32" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="ResearcherApprovals" Relationship="ScheduleExModel.FK_ResearcherApproval_ResearcherAvailability" FromRole="ResearcherAvailability" ToRole="ResearcherApproval" />
           <NavigationProperty Name="User" Relationship="ScheduleExModel.FK_ResearcherAvailability_Users" FromRole="ResearcherAvailability" ToRole="User" />
         </EntityType>
-        <EntityType Name="ResearcherExpertise">
+        <EntityType Name="ResearcherExpertis">
           <Key>
             <PropertyRef Name="ResearchExpertiseId" />
           </Key>
@@ -353,8 +402,8 @@
           <Property Name="AffiliatedOrgName" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="ResearcherId" Type="Int32" Nullable="false" />
           <Property Name="ExpertiseId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Expertise" Relationship="ScheduleExModel.FK_ResearcherExpertise_Expertise" FromRole="ResearcherExpertise" ToRole="Expertise" />
-          <NavigationProperty Name="User" Relationship="ScheduleExModel.FK_Expertise_Users" FromRole="ResearcherExpertise" ToRole="User" />
+          <NavigationProperty Name="Expertise" Relationship="ScheduleExModel.FK_ResearcherExpertise_Expertise" FromRole="ResearcherExpertis" ToRole="Expertise" />
+          <NavigationProperty Name="User" Relationship="ScheduleExModel.FK_Expertise_Users" FromRole="ResearcherExpertis" ToRole="User" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -378,7 +427,7 @@
           <NavigationProperty Name="ResearcherApprovals" Relationship="ScheduleExModel.FK_ResearcherApproval_Users" FromRole="User" ToRole="ResearcherApproval" />
           <NavigationProperty Name="ResearcherApprovals1" Relationship="ScheduleExModel.FK_ResearcherApproval_Users1" FromRole="User" ToRole="ResearcherApproval" />
           <NavigationProperty Name="ResearcherAvailabilities" Relationship="ScheduleExModel.FK_ResearcherAvailability_Users" FromRole="User" ToRole="ResearcherAvailability" />
-          <NavigationProperty Name="ResearcherExpertises" Relationship="ScheduleExModel.FK_Expertise_Users" FromRole="User" ToRole="ResearcherExpertise" />
+          <NavigationProperty Name="ResearcherExpertises" Relationship="ScheduleExModel.FK_Expertise_Users" FromRole="User" ToRole="ResearcherExpertis" />
           <NavigationProperty Name="Role" Relationship="ScheduleExModel.FK_Users_Roles" FromRole="User" ToRole="Role" />
         </EntityType>
         <Association Name="FK_ResearcherApproval_ApprovalStatuses">
@@ -395,12 +444,12 @@
         </Association>
         <Association Name="FK_ResearcherExpertise_Expertise">
           <End Type="ScheduleExModel.Expertise" Role="Expertise" Multiplicity="1" />
-          <End Type="ScheduleExModel.ResearcherExpertise" Role="ResearcherExpertise" Multiplicity="*" />
+          <End Type="ScheduleExModel.ResearcherExpertis" Role="ResearcherExpertis" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Expertise">
               <PropertyRef Name="ExpertiseId" />
             </Principal>
-            <Dependent Role="ResearcherExpertise">
+            <Dependent Role="ResearcherExpertis">
               <PropertyRef Name="ExpertiseId" />
             </Dependent>
           </ReferentialConstraint>
@@ -467,12 +516,12 @@
         </Association>
         <Association Name="FK_Expertise_Users">
           <End Type="ScheduleExModel.User" Role="User" Multiplicity="1" />
-          <End Type="ScheduleExModel.ResearcherExpertise" Role="ResearcherExpertise" Multiplicity="*" />
+          <End Type="ScheduleExModel.ResearcherExpertis" Role="ResearcherExpertis" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="UserId" />
             </Principal>
-            <Dependent Role="ResearcherExpertise">
+            <Dependent Role="ResearcherExpertis">
               <PropertyRef Name="ResearcherId" />
             </Dependent>
           </ReferentialConstraint>
@@ -488,6 +537,10 @@
               <PropertyRef Name="RoleId" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <Association Name="ProjectExpertises">
+          <End Type="ScheduleExModel.Expertise" Role="Expertise" Multiplicity="*" />
+          <End Type="ScheduleExModel.Project" Role="Project" Multiplicity="*" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -505,7 +558,7 @@
           </EntitySetMapping>
           <EntitySetMapping Name="Expertises">
             <EntityTypeMapping TypeName="ScheduleExModel.Expertise">
-              <MappingFragment StoreEntitySet="Expertise">
+              <MappingFragment StoreEntitySet="Expertises">
                 <ScalarProperty Name="ExpertiseName" ColumnName="ExpertiseName" />
                 <ScalarProperty Name="ExpertiseId" ColumnName="ExpertiseId" />
               </MappingFragment>
@@ -528,7 +581,8 @@
           </EntitySetMapping>
           <EntitySetMapping Name="ResearcherApprovals">
             <EntityTypeMapping TypeName="ScheduleExModel.ResearcherApproval">
-              <MappingFragment StoreEntitySet="ResearcherApproval">
+              <MappingFragment StoreEntitySet="ResearcherApprovals">
+                <ScalarProperty Name="HasResearcherApplied" ColumnName="HasResearcherApplied" />
                 <ScalarProperty Name="ResearcherId" ColumnName="ResearcherId" />
                 <ScalarProperty Name="ApproverId" ColumnName="ApproverId" />
                 <ScalarProperty Name="InfoRequested" ColumnName="InfoRequested" />
@@ -540,7 +594,7 @@
           </EntitySetMapping>
           <EntitySetMapping Name="ResearcherAvailabilities">
             <EntityTypeMapping TypeName="ScheduleExModel.ResearcherAvailability">
-              <MappingFragment StoreEntitySet="ResearcherAvailability">
+              <MappingFragment StoreEntitySet="ResearcherAvailabilities">
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="ResearcherId" ColumnName="ResearcherId" />
@@ -549,8 +603,8 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ResearcherExpertises">
-            <EntityTypeMapping TypeName="ScheduleExModel.ResearcherExpertise">
-              <MappingFragment StoreEntitySet="ResearcherExpertise">
+            <EntityTypeMapping TypeName="ScheduleExModel.ResearcherExpertis">
+              <MappingFragment StoreEntitySet="ResearcherExpertises">
                 <ScalarProperty Name="ExpertiseId" ColumnName="ExpertiseId" />
                 <ScalarProperty Name="ResearcherId" ColumnName="ResearcherId" />
                 <ScalarProperty Name="AffiliatedOrgName" ColumnName="AffiliatedOrgName" />
@@ -579,6 +633,14 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="ProjectExpertises" TypeName="ScheduleExModel.ProjectExpertises" StoreEntitySet="ProjectExpertises">
+            <EndProperty Name="Project">
+              <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
+            </EndProperty>
+            <EndProperty Name="Expertise">
+              <ScalarProperty Name="ExpertiseId" ColumnName="ExpertiseId" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

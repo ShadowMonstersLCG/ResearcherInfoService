@@ -11,6 +11,7 @@ namespace ResearcherInfoService.Controllers
 {
     public class ProjectController : ApiController
     {
+        [HttpGet]
         List<ProjectDto> GetProjectsForResearcher(int researcherId)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
@@ -43,6 +44,7 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public bool ApplyForProject(int researcherAvailabilityId, int projectId)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
@@ -57,6 +59,7 @@ namespace ResearcherInfoService.Controllers
                     ra.ApprovalStatusId = Constants.APPROVAL_STS_NOT_STARTED;
                     ra.ProjectId = projectId;
                     ra.ResearcherAvailabilityId = researcherAvailabilityId;
+                    
                     ra.ResearcherId = ctx.ResearcherAvailabilities.First(r => r.AvailabilityId == researcherAvailabilityId).ResearcherId;
                     ctx.ResearcherApprovals.Add(ra);
                     ctx.SaveChanges();
@@ -65,6 +68,7 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public List<ResearcherApprovalDto> GetResearcherApprovalStatus(int researcherId)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
@@ -74,6 +78,7 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public bool SaveInformationRequested(int availabilityId, int projectId, string informationRequested)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())

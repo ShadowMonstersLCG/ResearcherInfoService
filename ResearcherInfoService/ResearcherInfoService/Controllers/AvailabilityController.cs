@@ -26,6 +26,7 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public int AddResearcherAvailability(int researcherId, DateTime startDate, DateTime endDate)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
@@ -41,6 +42,7 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public bool UpdateResearcherAvailability(int availabilityId, DateTime startDate, DateTime endDate)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
@@ -59,6 +61,7 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public bool DeleteResearcherAvailability(int availabilityId)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
@@ -70,9 +73,16 @@ namespace ResearcherInfoService.Controllers
                 }
                 else
                 {
-                    ctx.ResearcherAvailabilities.Remove(ra);
-                    ctx.SaveChanges();
-                    return true;
+                    if (ra.ResearcherApprovals != null || ra.ResearcherApprovals.Count == 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        ctx.ResearcherAvailabilities.Remove(ra);
+                        ctx.SaveChanges();
+                        return true;
+                    }
                 }
             }
         }

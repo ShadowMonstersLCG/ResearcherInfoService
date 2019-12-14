@@ -26,11 +26,12 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public int AddResearcherExpertise(int researcherId, int expertiseId, string affilicatedOrgName)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
             {
-                DataAccess.ResearcherExpertise re = new DataAccess.ResearcherExpertise();
+                DataAccess.ResearcherExpertis re = new DataAccess.ResearcherExpertis();
                 re.ResearcherId = researcherId;
                 re.ExpertiseId = expertiseId;
                 re.AffiliatedOrgName = affilicatedOrgName;
@@ -41,11 +42,12 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public bool UpdateResearcherExpertise(int researcherExpertiseId, int expertiseId, string affilicatedOrgName)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
             {
-                DataAccess.ResearcherExpertise re = ctx.ResearcherExpertises.FirstOrDefault(r => r.ResearchExpertiseId == researcherExpertiseId);
+                DataAccess.ResearcherExpertis re = ctx.ResearcherExpertises.FirstOrDefault(r => r.ResearchExpertiseId == researcherExpertiseId);
                 if(re == null)
                 {
                     return false;
@@ -59,11 +61,12 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public bool DeleteResearcherExpertise(int researcherExpertiseId)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
             {
-                DataAccess.ResearcherExpertise re = ctx.ResearcherExpertises.FirstOrDefault(r => r.ResearchExpertiseId == researcherExpertiseId);
+                DataAccess.ResearcherExpertis re = ctx.ResearcherExpertises.FirstOrDefault(r => r.ResearchExpertiseId == researcherExpertiseId);
                 if (re == null)
                 {
                     return false;
@@ -77,6 +80,7 @@ namespace ResearcherInfoService.Controllers
             }
         }
 
+        [HttpGet]
         public List<ResearcherExpertiseDto> GetResearcherExpertise(int researcherId)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
