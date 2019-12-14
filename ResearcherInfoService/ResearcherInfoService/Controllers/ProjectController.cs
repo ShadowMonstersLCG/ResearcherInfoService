@@ -17,12 +17,14 @@ namespace ResearcherInfoService.Controllers
             {
                 //get all availabilities
                 List<ResearcherAvailability> availabilities = ctx.ResearcherAvailabilities.Where(r => r.ResearcherId == researcherId).ToList();
-                //filter out that are already taken 
+                List<int> projectIdsAlreadyApplied = new List<int>();
+                //filter out that are already applied 
                 for (int i = 0; i < availabilities.Count; i++)
                 {
-                    if (availabilities[i].ResearcherApprovals != null && availabilities[i].ResearcherApprovals.Any(appr => appr.ApprovalStatusId == Constants.APPROVAL_STS_APPROVED || appr.ApprovalStatusId == Constants.APPROVAL_STS_NEEDINFO || appr.ApprovalStatusId == Constants.APPROVAL_STS_BACKFORREV))
+                    ResearcherApproval approvalItem = ctx.ResearcherApprovals.FirstOrDefault(appr => appr.ResearcherAvailabilityId == availabilities[i].AvailabilityId);
+                    if (approvalItem != null)
                     {
-                        availabilities.Remove(availabilities[i]);
+                        projectIdsAlreadyApplied.Add(approvalItem.ProjectId);
                     }
                 }
                 //get all projects
@@ -30,7 +32,7 @@ namespace ResearcherInfoService.Controllers
                 //filter out that doesnt fall in availability range.
                 for(int j = 0; j < projects.Count; j++)
                 {
-                    if(!availabilities.Any(a => projects[j].StartDate <= a.StartDate && projects[j].EndDate >= a.EndDate))
+                    if(projectIdsAlreadyApplied.Contains(projects[j].ProjectId) ||  !availabilities.Any(a => projects[j].StartDate <= a.StartDate && projects[j].EndDate >= a.EndDate))
                     {
                         projects.Remove(projects[j]);
                     }
@@ -45,7 +47,7 @@ namespace ResearcherInfoService.Controllers
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
             {
-                if(ctx.ResearcherApprovals.Any(appr => appr.ResearcherAvailabilityId == researcherAvailabilityId && ( appr.ApprovalStatusId == Constants.APPROVAL_STS_APPROVED || appr.ApprovalStatusId == Constants.APPROVAL_STS_NEEDINFO || appr.ApprovalStatusId == Constants.APPROVAL_STS_BACKFORREV)))
+                if(ctx.ResearcherApprovals.Any(appr => appr.ResearcherAvailabilityId == researcherAvailabilityId && appr.ProjectId == projectId))
                 {
                     return false;
                 }
