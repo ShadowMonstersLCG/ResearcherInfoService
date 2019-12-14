@@ -80,6 +80,7 @@ namespace ResearcherInfoService.Controllers
             {
                 ResearcherApproval approval = ctx.ResearcherApprovals.FirstOrDefault(ra => ra.ResearcherAvailabilityId == availabilityId && ra.ProjectId == projectId);
                 approval.InfoRequested = informationRequested;
+                approval.ApprovalStatusId = Constants.APPROVAL_STS_BACKFORREV;
                 ctx.SaveChanges();
                 return true;
             }
