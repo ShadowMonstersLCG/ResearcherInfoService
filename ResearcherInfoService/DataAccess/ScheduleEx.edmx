@@ -53,7 +53,7 @@
           <Property Name="InfoRequested" Type="varchar" MaxLength="5000" />
           <Property Name="ApproverId" Type="int" />
           <Property Name="HasResearcherApplied" Type="bit" Nullable="false" />
-          <Property Name="MatchScore" Type="varchar" MaxLength="25" />
+          <Property Name="ExpertiseMatchScore" Type="varchar" MaxLength="25" />
         </EntityType>
         <EntityType Name="ResearcherAvailabilities">
           <Key>
@@ -360,11 +360,11 @@
           <Property Name="InfoRequested" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
           <Property Name="ApproverId" Type="Int32" />
           <Property Name="HasResearcherApplied" Type="Boolean" Nullable="false" />
-          <Property Name="MatchScore" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ApprovalStatus" Relationship="ScheduleExModel.FK_ResearcherApproval_ApprovalStatuses" FromRole="ResearcherApproval" ToRole="ApprovalStatus" />
           <NavigationProperty Name="Project" Relationship="ScheduleExModel.FK_ResearcherApproval_Projects" FromRole="ResearcherApproval" ToRole="Project" />
           <NavigationProperty Name="User" Relationship="ScheduleExModel.FK_ResearcherApproval_Users" FromRole="ResearcherApproval" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="ScheduleExModel.FK_ResearcherApproval_Users1" FromRole="ResearcherApproval" ToRole="User" />
+          <Property Name="ExpertiseMatchScore" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ResearcherAvailability">
           <Key>
@@ -555,7 +555,7 @@
           <EntitySetMapping Name="ResearcherApprovals">
             <EntityTypeMapping TypeName="ScheduleExModel.ResearcherApproval">
               <MappingFragment StoreEntitySet="ResearcherApprovals">
-                <ScalarProperty Name="MatchScore" ColumnName="MatchScore" />
+                <ScalarProperty Name="ExpertiseMatchScore" ColumnName="ExpertiseMatchScore" />
                 <ScalarProperty Name="HasResearcherApplied" ColumnName="HasResearcherApplied" />
                 <ScalarProperty Name="ApproverId" ColumnName="ApproverId" />
                 <ScalarProperty Name="InfoRequested" ColumnName="InfoRequested" />

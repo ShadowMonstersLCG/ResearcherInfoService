@@ -20,7 +20,7 @@ namespace ResearcherInfoService.DataAccess
         public string InfoRequested { get; set; }
         public Nullable<int> ApproverId { get; set; }
         public bool HasResearcherApplied { get; set; }
-        public string MatchScore { get; set; }
+        public string ExpertiseMatchScore { get; set; }
     
         public virtual ApprovalStatus ApprovalStatus { get; set; }
         public virtual Project Project { get; set; }

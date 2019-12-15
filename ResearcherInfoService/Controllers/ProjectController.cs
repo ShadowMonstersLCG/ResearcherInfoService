@@ -88,7 +88,7 @@ namespace ResearcherInfoService.Controllers
                     ra.ProjectId = projectId;
                     ra.ResearcherId = researcherId;
                     ra.HasResearcherApplied = true;
-                    ra.MatchScore = matchScore;
+                    ra.ExpertiseMatchScore = matchScore;
                     ctx.ResearcherApprovals.Add(ra);
                     ctx.SaveChanges();
                     return true;

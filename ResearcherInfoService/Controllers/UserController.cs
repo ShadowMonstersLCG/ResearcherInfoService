@@ -14,6 +14,7 @@ namespace ResearcherInfoService.Controllers
         [HttpGet]
         public bool EmailExists(string email)
         {
+            //checks email
             using (DataAccess.ScheduleExEntities ctx = new DataAccess.ScheduleExEntities())
             {
                 return ctx.Users.Any(u => u.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase));
