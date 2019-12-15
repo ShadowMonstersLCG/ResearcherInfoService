@@ -70,6 +70,7 @@ namespace ResearcherInfoService.Controllers
             }
             catch (DbEntityValidationException e)
             {
+                string error = string.Empty;
                 foreach (var eve in e.EntityValidationErrors)
                 {
                     Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
@@ -78,9 +79,13 @@ namespace ResearcherInfoService.Controllers
                     {
                         Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
                             ve.PropertyName, ve.ErrorMessage);
+
+                        error += ve.ErrorMessage;
                     }
+
+                   
                 }
-                throw;
+                throw new Exception("Validation Failed." + error);
             }
             catch(System.Data.Entity.Infrastructure.DbUpdateException ue)
             {
