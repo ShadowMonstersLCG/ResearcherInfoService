@@ -2,6 +2,7 @@
 using ResearcherInfoService.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -22,45 +23,71 @@ namespace ResearcherInfoService.Controllers
         }
 
         [HttpGet]
-        public int RegisterUser(string firstName, string lastName, string email, string hashPwd, string city, string state, long phonenumber, int[] expertiseIds, string organization, string almaMater, int[] availableMonths)
+        public int RegisterUser(string firstName, string lastName, string email, string hashPwd, string city, string state, long phonenumber, string expertiseIdsStr, string organization, string almaMater, string availableMonthsStr)
         {
-            using (DataAccess.ScheduleExEntities ctx = new DataAccess.ScheduleExEntities())
+            try
             {
-                DataAccess.User newUser = new DataAccess.User();
-                newUser.FirstName = firstName;
-                newUser.LastName = lastName;
-                newUser.Email = email;
-                newUser.HashPwd = hashPwd;
-                newUser.City = city;
-                newUser.State = state;
-                newUser.RoleId = ctx.Roles.First(r => r.RoleName.Equals("Researcher", StringComparison.InvariantCultureIgnoreCase)).RoleId;
-                newUser.PhoneNumber = phonenumber;
-                newUser.Organization = organization;
-                newUser.AlmaMater = almaMater;
-                ctx.Users.Add(newUser);
-                ctx.SaveChanges();
-                foreach(int expertiseId in expertiseIds)
+                using (DataAccess.ScheduleExEntities ctx = new DataAccess.ScheduleExEntities())
                 {
-                    DataAccess.ResearcherExpertis expertise = new DataAccess.ResearcherExpertis();
-                    expertise.ExpertiseId = expertiseId;
-                    expertise.ResearcherId = newUser.UserId;
-                    ctx.ResearcherExpertises.Add(expertise);
-                }
+                    if(ctx.Users.Any(u => u.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        throw new Exception(string.Format("Email '{0}' already exists.", email));
+                    }
 
-                foreach (int availableMonth in availableMonths)
+                    DataAccess.User newUser = new DataAccess.User();
+                    newUser.FirstName = firstName;
+                    newUser.LastName = lastName;
+                    newUser.Email = email;
+                    newUser.HashPwd = hashPwd;
+                    newUser.City = city;
+                    newUser.State = state;
+                    newUser.RoleId = ctx.Roles.First(r => r.RoleName.Equals("Researcher", StringComparison.InvariantCultureIgnoreCase)).RoleId;
+                    newUser.PhoneNumber = phonenumber;
+                    newUser.Organization = organization;
+                    newUser.AlmaMater = almaMater;
+                    ctx.Users.Add(newUser);
+                    ctx.SaveChanges();
+                    List<int> expertiseIds = expertiseIdsStr.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(int.Parse);
+                    foreach (int expertiseId in expertiseIds)
+                    {
+                        DataAccess.ResearcherExpertis expertise = new DataAccess.ResearcherExpertis();
+                        expertise.ExpertiseId = expertiseId;
+                        expertise.ResearcherId = newUser.UserId;
+                        ctx.ResearcherExpertises.Add(expertise);
+                    }
+                    List<int> availableMonths = availableMonthsStr.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList().ConvertAll(int.Parse);
+                    foreach (int availableMonth in availableMonths)
+                    {
+                        DataAccess.ResearcherAvailability availability = new DataAccess.ResearcherAvailability();
+                        availability.Month = availableMonth;
+                        availability.ResearcherId = newUser.UserId;
+                        ctx.ResearcherAvailabilities.Add(availability);
+                    }
+                    ctx.SaveChanges();
+
+                    return newUser.UserId;
+                }
+            }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
                 {
-                    DataAccess.ResearcherAvailability availability = new DataAccess.ResearcherAvailability();
-                    availability.Month = availableMonth;
-                    availability.ResearcherId = newUser.UserId;
-                    ctx.ResearcherAvailabilities.Add(availability);
+                    Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().Name, eve.Entry.State);
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
+                            ve.PropertyName, ve.ErrorMessage);
+                    }
                 }
-                ctx.SaveChanges();
-
-                return newUser.UserId;
+                throw;
+            }
+            catch(System.Data.Entity.Infrastructure.DbUpdateException ue)
+            {
+                throw;
             }
 
-        
-    }
+        }
 
         [HttpGet]
         public List<ExpertiseDto> GetAllExpertise()

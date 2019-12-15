@@ -172,6 +172,7 @@
     <Content Include="DataAccess\ScheduleEx.edmx.diagram">
       <DependentUpon>ScheduleEx.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\Publish.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
