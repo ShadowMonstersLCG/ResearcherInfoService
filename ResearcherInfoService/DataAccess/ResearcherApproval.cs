@@ -15,16 +15,15 @@ namespace ResearcherInfoService.DataAccess
     public partial class ResearcherApproval
     {
         public int ProjectId { get; set; }
-        public int ResearcherAvailabilityId { get; set; }
+        public int ResearcherId { get; set; }
         public int ApprovalStatusId { get; set; }
         public string InfoRequested { get; set; }
         public Nullable<int> ApproverId { get; set; }
-        public int ResearcherId { get; set; }
         public bool HasResearcherApplied { get; set; }
+        public string MatchScore { get; set; }
     
         public virtual ApprovalStatus ApprovalStatus { get; set; }
         public virtual Project Project { get; set; }
-        public virtual ResearcherAvailability ResearcherAvailability { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
     }

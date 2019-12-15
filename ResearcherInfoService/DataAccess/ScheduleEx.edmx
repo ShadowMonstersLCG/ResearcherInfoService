@@ -40,19 +40,20 @@
           <Property Name="StartDate" Type="datetime" Nullable="false" />
           <Property Name="EndDate" Type="datetime" Nullable="false" />
           <Property Name="IsPublished" Type="bit" />
+          <Property Name="State" Type="char" MaxLength="2" Nullable="false" />
         </EntityType>
         <EntityType Name="ResearcherApprovals">
           <Key>
             <PropertyRef Name="ProjectId" />
-            <PropertyRef Name="ResearcherAvailabilityId" />
+            <PropertyRef Name="ResearcherId" />
           </Key>
           <Property Name="ProjectId" Type="int" Nullable="false" />
-          <Property Name="ResearcherAvailabilityId" Type="int" Nullable="false" />
+          <Property Name="ResearcherId" Type="int" Nullable="false" />
           <Property Name="ApprovalStatusId" Type="int" Nullable="false" />
           <Property Name="InfoRequested" Type="varchar" MaxLength="5000" />
           <Property Name="ApproverId" Type="int" />
-          <Property Name="ResearcherId" Type="int" Nullable="false" />
           <Property Name="HasResearcherApplied" Type="bit" Nullable="false" />
+          <Property Name="MatchScore" Type="varchar" MaxLength="25" />
         </EntityType>
         <EntityType Name="ResearcherAvailabilities">
           <Key>
@@ -60,15 +61,13 @@
           </Key>
           <Property Name="AvailabilityId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ResearcherId" Type="int" Nullable="false" />
-          <Property Name="StartDate" Type="datetime" Nullable="false" />
-          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="Month" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ResearcherExpertises">
           <Key>
             <PropertyRef Name="ResearchExpertiseId" />
           </Key>
           <Property Name="ResearchExpertiseId" Type="int" Nullable="false" />
-          <Property Name="AffiliatedOrgName" Type="varchar" MaxLength="2000" />
           <Property Name="ResearcherId" Type="int" Nullable="false" />
           <Property Name="ExpertiseId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
@@ -90,6 +89,10 @@
           <Property Name="HashPwd" Type="varchar(max)" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
           <Property Name="PhoneNumber" Type="bigint" Nullable="false" />
+          <Property Name="City" Type="varchar" MaxLength="500" />
+          <Property Name="State" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="Organization" Type="varchar" MaxLength="1000" />
+          <Property Name="AlmaMater" Type="varchar" MaxLength="3000" />
         </EntityType>
         <Association Name="FK_Expertise_Users">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -148,18 +151,6 @@
             </Principal>
             <Dependent Role="ResearcherApprovals">
               <PropertyRef Name="ProjectId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ResearcherApproval_ResearcherAvailability">
-          <End Role="ResearcherAvailabilities" Type="Self.ResearcherAvailabilities" Multiplicity="1" />
-          <End Role="ResearcherApprovals" Type="Self.ResearcherApprovals" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ResearcherAvailabilities">
-              <PropertyRef Name="AvailabilityId" />
-            </Principal>
-            <Dependent Role="ResearcherApprovals">
-              <PropertyRef Name="ResearcherAvailabilityId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -253,10 +244,6 @@
             <End Role="Projects" EntitySet="Projects" />
             <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
           </AssociationSet>
-          <AssociationSet Name="FK_ResearcherApproval_ResearcherAvailability" Association="Self.FK_ResearcherApproval_ResearcherAvailability">
-            <End Role="ResearcherAvailabilities" EntitySet="ResearcherAvailabilities" />
-            <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
-          </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_Users" Association="Self.FK_ResearcherApproval_Users">
             <End Role="Users" EntitySet="Users" />
             <End Role="ResearcherApprovals" EntitySet="ResearcherApprovals" />
@@ -301,10 +288,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_Projects" Association="ScheduleExModel.FK_ResearcherApproval_Projects">
             <End Role="Project" EntitySet="Projects" />
-            <End Role="ResearcherApproval" EntitySet="ResearcherApprovals" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ResearcherApproval_ResearcherAvailability" Association="ScheduleExModel.FK_ResearcherApproval_ResearcherAvailability">
-            <End Role="ResearcherAvailability" EntitySet="ResearcherAvailabilities" />
             <End Role="ResearcherApproval" EntitySet="ResearcherApprovals" />
           </AssociationSet>
           <AssociationSet Name="FK_ResearcherApproval_Users" Association="ScheduleExModel.FK_ResearcherApproval_Users">
@@ -362,26 +345,26 @@
           <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsPublished" Type="Boolean" />
+          <Property Name="State" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
           <NavigationProperty Name="ResearcherApprovals" Relationship="ScheduleExModel.FK_ResearcherApproval_Projects" FromRole="Project" ToRole="ResearcherApproval" />
           <NavigationProperty Name="Expertises" Relationship="ScheduleExModel.ProjectExpertises" FromRole="Project" ToRole="Expertise" />
         </EntityType>
         <EntityType Name="ResearcherApproval">
           <Key>
             <PropertyRef Name="ProjectId" />
-            <PropertyRef Name="ResearcherAvailabilityId" />
+            <PropertyRef Name="ResearcherId" />
           </Key>
           <Property Name="ProjectId" Type="Int32" Nullable="false" />
-          <Property Name="ResearcherAvailabilityId" Type="Int32" Nullable="false" />
+          <Property Name="ResearcherId" Type="Int32" Nullable="false" />
           <Property Name="ApprovalStatusId" Type="Int32" Nullable="false" />
           <Property Name="InfoRequested" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
           <Property Name="ApproverId" Type="Int32" />
-          <Property Name="ResearcherId" Type="Int32" Nullable="false" />
+          <Property Name="HasResearcherApplied" Type="Boolean" Nullable="false" />
+          <Property Name="MatchScore" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ApprovalStatus" Relationship="ScheduleExModel.FK_ResearcherApproval_ApprovalStatuses" FromRole="ResearcherApproval" ToRole="ApprovalStatus" />
           <NavigationProperty Name="Project" Relationship="ScheduleExModel.FK_ResearcherApproval_Projects" FromRole="ResearcherApproval" ToRole="Project" />
-          <NavigationProperty Name="ResearcherAvailability" Relationship="ScheduleExModel.FK_ResearcherApproval_ResearcherAvailability" FromRole="ResearcherApproval" ToRole="ResearcherAvailability" />
           <NavigationProperty Name="User" Relationship="ScheduleExModel.FK_ResearcherApproval_Users" FromRole="ResearcherApproval" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="ScheduleExModel.FK_ResearcherApproval_Users1" FromRole="ResearcherApproval" ToRole="User" />
-          <Property Name="HasResearcherApplied" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="ResearcherAvailability">
           <Key>
@@ -389,9 +372,7 @@
           </Key>
           <Property Name="AvailabilityId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ResearcherId" Type="Int32" Nullable="false" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="ResearcherApprovals" Relationship="ScheduleExModel.FK_ResearcherApproval_ResearcherAvailability" FromRole="ResearcherAvailability" ToRole="ResearcherApproval" />
+          <Property Name="Month" Type="Int32" Nullable="false" />
           <NavigationProperty Name="User" Relationship="ScheduleExModel.FK_ResearcherAvailability_Users" FromRole="ResearcherAvailability" ToRole="User" />
         </EntityType>
         <EntityType Name="ResearcherExpertis">
@@ -399,7 +380,6 @@
             <PropertyRef Name="ResearchExpertiseId" />
           </Key>
           <Property Name="ResearchExpertiseId" Type="Int32" Nullable="false" />
-          <Property Name="AffiliatedOrgName" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="ResearcherId" Type="Int32" Nullable="false" />
           <Property Name="ExpertiseId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Expertise" Relationship="ScheduleExModel.FK_ResearcherExpertise_Expertise" FromRole="ResearcherExpertis" ToRole="Expertise" />
@@ -424,6 +404,10 @@
           <Property Name="HashPwd" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <Property Name="PhoneNumber" Type="Int64" Nullable="false" />
+          <Property Name="City" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="State" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="Organization" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="AlmaMater" Type="String" MaxLength="3000" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ResearcherApprovals" Relationship="ScheduleExModel.FK_ResearcherApproval_Users" FromRole="User" ToRole="ResearcherApproval" />
           <NavigationProperty Name="ResearcherApprovals1" Relationship="ScheduleExModel.FK_ResearcherApproval_Users1" FromRole="User" ToRole="ResearcherApproval" />
           <NavigationProperty Name="ResearcherAvailabilities" Relationship="ScheduleExModel.FK_ResearcherAvailability_Users" FromRole="User" ToRole="ResearcherAvailability" />
@@ -463,18 +447,6 @@
             </Principal>
             <Dependent Role="ResearcherApproval">
               <PropertyRef Name="ProjectId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ResearcherApproval_ResearcherAvailability">
-          <End Type="ScheduleExModel.ResearcherAvailability" Role="ResearcherAvailability" Multiplicity="1" />
-          <End Type="ScheduleExModel.ResearcherApproval" Role="ResearcherApproval" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ResearcherAvailability">
-              <PropertyRef Name="AvailabilityId" />
-            </Principal>
-            <Dependent Role="ResearcherApproval">
-              <PropertyRef Name="ResearcherAvailabilityId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -567,6 +539,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="ScheduleExModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="State" ColumnName="State" />
                 <ScalarProperty Name="IsPublished" ColumnName="IsPublished" />
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
@@ -582,12 +555,12 @@
           <EntitySetMapping Name="ResearcherApprovals">
             <EntityTypeMapping TypeName="ScheduleExModel.ResearcherApproval">
               <MappingFragment StoreEntitySet="ResearcherApprovals">
+                <ScalarProperty Name="MatchScore" ColumnName="MatchScore" />
                 <ScalarProperty Name="HasResearcherApplied" ColumnName="HasResearcherApplied" />
-                <ScalarProperty Name="ResearcherId" ColumnName="ResearcherId" />
                 <ScalarProperty Name="ApproverId" ColumnName="ApproverId" />
                 <ScalarProperty Name="InfoRequested" ColumnName="InfoRequested" />
                 <ScalarProperty Name="ApprovalStatusId" ColumnName="ApprovalStatusId" />
-                <ScalarProperty Name="ResearcherAvailabilityId" ColumnName="ResearcherAvailabilityId" />
+                <ScalarProperty Name="ResearcherId" ColumnName="ResearcherId" />
                 <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -595,8 +568,7 @@
           <EntitySetMapping Name="ResearcherAvailabilities">
             <EntityTypeMapping TypeName="ScheduleExModel.ResearcherAvailability">
               <MappingFragment StoreEntitySet="ResearcherAvailabilities">
-                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
                 <ScalarProperty Name="ResearcherId" ColumnName="ResearcherId" />
                 <ScalarProperty Name="AvailabilityId" ColumnName="AvailabilityId" />
               </MappingFragment>
@@ -607,7 +579,6 @@
               <MappingFragment StoreEntitySet="ResearcherExpertises">
                 <ScalarProperty Name="ExpertiseId" ColumnName="ExpertiseId" />
                 <ScalarProperty Name="ResearcherId" ColumnName="ResearcherId" />
-                <ScalarProperty Name="AffiliatedOrgName" ColumnName="AffiliatedOrgName" />
                 <ScalarProperty Name="ResearchExpertiseId" ColumnName="ResearchExpertiseId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -623,6 +594,10 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="ScheduleExModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="AlmaMater" ColumnName="AlmaMater" />
+                <ScalarProperty Name="Organization" ColumnName="Organization" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="City" ColumnName="City" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="HashPwd" ColumnName="HashPwd" />

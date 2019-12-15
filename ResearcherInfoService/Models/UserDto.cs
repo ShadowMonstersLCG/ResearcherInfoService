@@ -14,5 +14,10 @@ namespace ResearcherInfoService.Models
         public string HashPwd { get; set; }
         public int RoleId { get; set; }
         public long PhoneNumber { get; set; }
+        public string Organization { get; set; }
+        public string AlmaMater { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        
     }
 }

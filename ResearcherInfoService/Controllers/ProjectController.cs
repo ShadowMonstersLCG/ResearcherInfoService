@@ -12,55 +12,83 @@ namespace ResearcherInfoService.Controllers
     public class ProjectController : ApiController
     {
         [HttpGet]
-        List<ProjectDto> GetProjectsForResearcher(int researcherId)
+        List<ProjectDto> GetProjects(int researcherId)
         {
+            List<ProjectDto> projectDtos = new List<ProjectDto>();
             using (ScheduleExEntities ctx = new ScheduleExEntities())
             {
-                //get all availabilities
-                List<ResearcherAvailability> availabilities = ctx.ResearcherAvailabilities.Where(r => r.ResearcherId == researcherId).ToList();
-                List<int> projectIdsAlreadyApplied = new List<int>();
-                //filter out that are already applied 
-                for (int i = 0; i < availabilities.Count; i++)
-                {
-                    ResearcherApproval approvalItem = ctx.ResearcherApprovals.FirstOrDefault(appr => appr.ResearcherAvailabilityId == availabilities[i].AvailabilityId);
-                    if (approvalItem != null)
-                    {
-                        projectIdsAlreadyApplied.Add(approvalItem.ProjectId);
-                    }
-                }
+                DataAccess.User user = ctx.Users.First(u => u.UserId == researcherId);
+
+                List<ResearcherAvailability> availabilities = user.ResearcherAvailabilities.ToList();
+
                 //get all projects
                 List<Project> projects = ctx.Projects.Where(p => p.IsPublished == true && p.Approved == true).ToList();
-                //filter out that doesnt fall in availability range.
-                for(int j = 0; j < projects.Count; j++)
+               
+                for(int projIndex = 0; projIndex < projects.Count; projIndex++)
                 {
-                    if(projectIdsAlreadyApplied.Contains(projects[j].ProjectId) ||  !availabilities.Any(a => projects[j].StartDate <= a.StartDate && projects[j].EndDate >= a.EndDate))
-                    {
-                        projects.Remove(projects[j]);
-                    }
-                }
+                    List<ResearcherApproval> approvals = ctx.ResearcherApprovals.Where(a => a.ResearcherId == researcherId && a.ProjectId == projects[projIndex].ProjectId).ToList();
 
-                List<ProjectDto> projectDto = (from p in projects select new ProjectDto { ProjectId = p.ProjectId, StartDate = p.StartDate, EndDate = p.EndDate, ProjectName = p.ProjectName, Description = p.Description,  ApprovedBy = p.ApprovedBy, ApprovedDate = p.ApprovedDate, Approved = p.Approved, IsPublished = p.IsPublished }).ToList();
-                return projectDto;
+                    if (projects[projIndex].State.Equals(user.State))
+                    {
+                        continue;
+                    }
+
+                    bool hasAvailabilityMatch = false;
+                    DataAccess.ResearcherApproval researcherApproval = null;
+                    foreach(ResearcherAvailability availability in availabilities)
+                    {
+                        if(availability.Month >= projects[projIndex].StartDate.Month && availability.Month <= projects[projIndex].EndDate.Month)
+                        {
+                            hasAvailabilityMatch = true;
+
+                            researcherApproval = user.ResearcherApprovals.Where(ra => ra.ProjectId == projects[projIndex].ProjectId).FirstOrDefault();
+                        }
+                    }
+
+                    if(!hasAvailabilityMatch)
+                    {
+                        continue;
+                    }
+
+                    ProjectDto projectDto = new ProjectDto();
+                    projectDto.ProjectId = projects[projIndex].ProjectId;
+                    projectDto.ProjectName = projects[projIndex].ProjectName;
+                    projectDto.Description = projects[projIndex].Description;
+                    projectDto.State = projects[projIndex].State;
+                    projectDto.StartDate = projects[projIndex].StartDate;
+                    projectDto.EndDate = projects[projIndex].EndDate;
+                    projectDto.Status = (researcherApproval != null ? researcherApproval.ApprovalStatus.Status : "Available");
+                    projectDto.InfoRequested = (researcherApproval != null ? researcherApproval.InfoRequested : string.Empty);
+                    projectDtos.Add(projectDto);
+                }
             }
+            return projectDtos;
         }
 
         [HttpGet]
-        public bool ApplyForProject(int researcherAvailabilityId, int projectId)
+        public bool ApplyForProject(int researcherId, int projectId)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
             {
-                if(ctx.ResearcherApprovals.Any(appr => appr.ResearcherAvailabilityId == researcherAvailabilityId && appr.ProjectId == projectId))
+                Project project = ctx.Projects.FirstOrDefault(p => p.ProjectId == projectId);
+                User user = ctx.Users.FirstOrDefault(u => u.UserId == researcherId);
+
+                int noOfMatches = project.Expertises.Select(ex => ex.ExpertiseId).ToList().Intersect(user.ResearcherExpertises.Select(ex => ex.ExpertiseId).ToList()).Count();
+
+                string matchScore = string.Format("{0}/{1}", noOfMatches, project.Expertises.Count);
+
+                if (ctx.ResearcherApprovals.Any(appr => appr.ResearcherId == researcherId && appr.ProjectId == projectId))
                 {
                     return false;
                 }
                 else
                 {
                     ResearcherApproval ra = new ResearcherApproval();
-                    ra.ApprovalStatusId = Constants.APPROVAL_STS_NOT_STARTED;
+                    ra.ApprovalStatusId = Constants.APPROVAL_STS_APPLIED;
                     ra.ProjectId = projectId;
-                    ra.ResearcherAvailabilityId = researcherAvailabilityId;
-                    
-                    ra.ResearcherId = ctx.ResearcherAvailabilities.First(r => r.AvailabilityId == researcherAvailabilityId).ResearcherId;
+                    ra.ResearcherId = researcherId;
+                    ra.HasResearcherApplied = true;
+                    ra.MatchScore = matchScore;
                     ctx.ResearcherApprovals.Add(ra);
                     ctx.SaveChanges();
                     return true;
@@ -79,13 +107,13 @@ namespace ResearcherInfoService.Controllers
         }
 
         [HttpGet]
-        public bool SaveInformationRequested(int availabilityId, int projectId, string informationRequested)
+        public bool SaveInformationRequested(int researcher, int projectId, string informationRequested)
         {
             using (ScheduleExEntities ctx = new ScheduleExEntities())
             {
-                ResearcherApproval approval = ctx.ResearcherApprovals.FirstOrDefault(ra => ra.ResearcherAvailabilityId == availabilityId && ra.ProjectId == projectId);
+                ResearcherApproval approval = ctx.ResearcherApprovals.FirstOrDefault(ra => ra.ResearcherId == researcher && ra.ProjectId == projectId);
                 approval.InfoRequested = informationRequested;
-                approval.ApprovalStatusId = Constants.APPROVAL_STS_BACKFORREV;
+                approval.ApprovalStatusId = Constants.APPROVAL_STS_APPLIED;
                 ctx.SaveChanges();
                 return true;
             }

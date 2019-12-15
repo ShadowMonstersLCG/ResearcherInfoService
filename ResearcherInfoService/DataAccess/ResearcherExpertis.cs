@@ -15,7 +15,6 @@ namespace ResearcherInfoService.DataAccess
     public partial class ResearcherExpertis
     {
         public int ResearchExpertiseId { get; set; }
-        public string AffiliatedOrgName { get; set; }
         public int ResearcherId { get; set; }
         public int ExpertiseId { get; set; }
     

@@ -30,6 +30,10 @@ namespace ResearcherInfoService.DataAccess
         public string HashPwd { get; set; }
         public int RoleId { get; set; }
         public long PhoneNumber { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Organization { get; set; }
+        public string AlmaMater { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ResearcherApproval> ResearcherApprovals { get; set; }

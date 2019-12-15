@@ -16,5 +16,8 @@ namespace ResearcherInfoService.Models
         public System.DateTime StartDate { get; set; }
         public System.DateTime EndDate { get; set; }
         public Nullable<bool> IsPublished { get; set; }
+        public string State { get; set; }
+        public string Status {get; set;}
+        public string InfoRequested { get; set; }
     }
 }

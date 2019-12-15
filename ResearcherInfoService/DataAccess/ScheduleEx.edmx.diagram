@@ -5,18 +5,17 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="c4a990873b1d41059eac7b3dda6f7fd1" Name="Diagram1">
-        <EntityTypeShape EntityType="ScheduleExModel.ApprovalStatus" Width="1.5" PointX="5.25" PointY="9.625" />
-        <EntityTypeShape EntityType="ScheduleExModel.Expertise" Width="1.5" PointX="3" PointY="1.5" />
-        <EntityTypeShape EntityType="ScheduleExModel.Project" Width="1.5" PointX="5.25" PointY="0.75" />
-        <EntityTypeShape EntityType="ScheduleExModel.ResearcherApproval" Width="1.5" PointX="7.5" PointY="7.875" />
-        <EntityTypeShape EntityType="ScheduleExModel.ResearcherAvailability" Width="1.5" PointX="5.25" PointY="12.125" />
-        <EntityTypeShape EntityType="ScheduleExModel.ResearcherExpertis" Width="1.5" PointX="5.25" PointY="5.25" />
-        <EntityTypeShape EntityType="ScheduleExModel.Role" Width="1.5" PointX="0.75" PointY="5.625" />
-        <EntityTypeShape EntityType="ScheduleExModel.User" Width="1.5" PointX="3" PointY="4.75" />
+        <EntityTypeShape EntityType="ScheduleExModel.ApprovalStatus" Width="1.5" PointX="6" PointY="12.875" />
+        <EntityTypeShape EntityType="ScheduleExModel.Expertise" Width="1.5" PointX="3.75" PointY="3" />
+        <EntityTypeShape EntityType="ScheduleExModel.Project" Width="1.5" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="ScheduleExModel.ResearcherApproval" Width="1.5" PointX="8.25" PointY="6" />
+        <EntityTypeShape EntityType="ScheduleExModel.ResearcherAvailability" Width="1.5" PointX="5.25" PointY="9.375" />
+        <EntityTypeShape EntityType="ScheduleExModel.ResearcherExpertis" Width="1.5" PointX="5.25" PointY="6.625" />
+        <EntityTypeShape EntityType="ScheduleExModel.Role" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="ScheduleExModel.User" Width="1.5" PointX="3" PointY="5.5" />
         <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_ApprovalStatuses" />
         <AssociationConnector Association="ScheduleExModel.FK_ResearcherExpertise_Expertise" />
         <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_Projects" />
-        <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_ResearcherAvailability" />
         <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_Users" />
         <AssociationConnector Association="ScheduleExModel.FK_ResearcherApproval_Users1" />
         <AssociationConnector Association="ScheduleExModel.FK_ResearcherAvailability_Users" />
